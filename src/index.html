@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinephile ARCHIVE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+        body { background-color: #050505; color: #a3a3a3; font-family: 'Inter', sans-serif; filter: sepia(10%) contrast(105%); }
+        .serif { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="antialiased min-h-screen pb-32">
+
+    <nav class="fixed top-0 w-full z-50 bg-black/90 border-b border-gray-800 backdrop-blur-md px-8 py-4 flex justify-between items-center">
+        <div class="text-white serif  text-xl">Cinephile</div>
+        <div id="auth-section" class="flex gap-4 text-xs uppercase tracking-widest">
+            </div>
+    </nav>
+    <header class="text-center pt-32 pb-16 px-4">
+        <h1 class="text-white text-5xl md:text-8xl font-light serif tracking-tighter mb-8">Cinephile</h1>
+        
+        <div class="max-w-xl mx-auto relative group">
+            <input type="text" id="search-input" placeholder="Search for a film..." 
+                class="w-full bg-gray-900/50 border border-gray-800 rounded-full px-6 py-3 text-white focus:outline-none focus:border-gray-500 transition text-center serif placeholder-gray-700">
+            <div id="search-results" class="absolute top-14 left-0 w-full bg-black border border-gray-800 rounded-xl overflow-hidden hidden z-40 shadow-2xl">
+                </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12" id="db-movies">
+        </main>
+
+    <div id="auth-modal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center">
+        <div class="bg-gray-900 border border-gray-800 p-8 rounded-2xl w-96 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-600 hover:text-white">✕</button>
+            <h2 id="modal-title" class="text-2xl text-white serif mb-6">Login</h2>
+            <form id="auth-form" class="space-y-4">
+                <input type="text" id="username" placeholder="Username" class="w-full bg-black border border-gray-700 p-3 rounded text-white focus:border-white outline-none">
+                <input type="password" id="password" placeholder="Password" class="w-full bg-black border border-gray-700 p-3 rounded text-white focus:border-white outline-none">
+                <button type="submit" class="w-full bg-white text-black py-3 rounded font-bold uppercase tracking-widest hover:bg-gray-200">Submit</button>
+            </form>
+        </div>
+    </div>
+
+<script>
+        const API_URL = 'http://localhost:3000/api';
+        
+        // --- AUTH CHECK ---
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const authDiv = document.getElementById('auth-section');
+
+        if (token && username) {
+            authDiv.innerHTML = `
+                <span class="text-gray-500 py-1">Welcome, ${username}</span> 
+                <button onclick="logout()" class="text-white hover:text-red-500 ml-4">Logout</button>
+            `;
+        } else {
+            authDiv.innerHTML = `
+                <a href="login.html" class="hover:text-white py-1">Login</a> 
+                <a href="signup.html" class="border border-gray-600 px-4 py-1 rounded-full hover:bg-white hover:text-black transition">Sign Up</a>
+            `;
+        }
+
+        function logout() { localStorage.clear(); location.reload(); }
+
+        // --- SEARCH ENGINE ---
+        const searchInput = document.getElementById('search-input');
+        const resultsBox = document.getElementById('search-results');
+        let debounceTimer;
+
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => performSearch(e.target.value), 300);
+        });
+
+        async function performSearch(query) {
+            if (query.length < 2) { resultsBox.classList.add('hidden'); return; }
+            
+            try {
+                const res = await axios.get(`${API_URL}/movies/search?q=${query}`);
+                
+                if (res.data.length === 0) {
+                    resultsBox.classList.add('hidden');
+                    return;
+                }
+
+                resultsBox.innerHTML = res.data.map(m => `
+                    <a href="movie.html?tmdbId=${m.id}" class="flex gap-4 p-4 hover:bg-gray-900 border-b border-gray-800 transition items-center cursor-pointer">
+                        <img src="${m.poster || 'https://via.placeholder.com/50x75?text=No+Img'}" class="w-12 h-16 object-cover rounded">
+                        <div class="flex-1 text-left">
+                            <h4 class="text-white text-sm font-bold">${m.title}</h4>
+                            <p class="text-xs text-gray-500">${m.year}</p>
+                        </div>
+                    </a>
+                `).join('');
+                
+                resultsBox.classList.remove('hidden');
+            } catch (err) { console.error("Search error", err); }
+        }
+
+        // Hide search if clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+                resultsBox.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

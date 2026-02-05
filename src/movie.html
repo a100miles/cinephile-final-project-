@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link href="./output.css" rel="stylesheet"> 
+    <script src="https://cdn.tailwindcss.com"></script> <style>
+        /* KEEPING YOUR STYLE FROM PREVIOUS STEPS */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #050505;
+            color: #a3a3a3;
+            filter: sepia(10%) contrast(105%);
+        }
+        .serif { font-family: 'Playfair Display', serif; }
+        .video-wrapper { pointer-events: none; overflow: hidden; }
+        .video-iframe { transform: scale(1.5); width: 100%; height: 100%; }
+    </style>
+</head>
+<body class="antialiased min-h-screen selection:bg-white selection:text-black">
+
+    <nav class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 bg-black/90 border border-gray-800 rounded-full px-2 py-2 flex gap-2 backdrop-blur-md">
+        <a href="index.html" class="px-6 py-2 rounded-full hover:bg-white hover:text-black transition duration-300 text-[10px] tracking-[0.25em] uppercase border border-transparent hover:border-black flex items-center gap-2">
+            <span>← Return</span>
+        </a>
+    </nav>
+
+    <div id="movie-content" class="opacity-0 transition-opacity duration-1000">
+        <div class="relative w-full h-[85vh] border-b border-gray-900 video-wrapper">
+            <iframe id="hero-frame" class="video-iframe opacity-60" 
+                frameborder="0" allow="autoplay; encrypted-media">
+            </iframe>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+            
+            <div class="absolute bottom-0 left-0 w-full p-8 md:p-20">
+                <h1 id="movie-title" class="text-6xl md:text-9xl text-white serif mb-6 leading-none tracking-tight"></h1>
+                <div class="flex flex-col md:flex-row gap-8 md:items-center">
+                    <div class="flex gap-4 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-400">
+                        <span id="movie-year"></span> • <span id="movie-director"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-6 py-24 space-y-32">
+            <section>
+                <h3 class="text-white text-3xl serif mb-8 border-b border-gray-800 pb-4">Soundtrack</h3>
+                <div id="soundtrack-list" class="space-y-0"></div>
+            </section>
+
+            <section>
+                <h3 class="text-white text-3xl serif mb-8 border-b border-gray-800 pb-4">Gallery</h3>
+                <div id="gallery-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            </section>
+        </div>
+    </div>
+
+<script>
+        async function loadMovie() {
+            const params = new URLSearchParams(window.location.search);
+            const localId = params.get('id');
+            const tmdbId = params.get('tmdbId');
+
+            if (!localId && !tmdbId) return window.location.href = 'index.html';
+
+            try {
+                let movie;
+                if (tmdbId) {
+                    // Fetch from TMDB Proxy
+                    const response = await fetch('/api/movies/tmdb/' + tmdbId);
+                    movie = await response.json();
+                } else {
+                    // Fetch from Local DB
+                    const response = await fetch('/api/movies/' + localId);
+                    movie = await response.json();
+                }
+
+                document.title = movie.title + ' - Cinephile';
+                document.getElementById('movie-title').innerText = movie.title;
+                document.getElementById('movie-year').innerText = movie.year || 'N/A';
+                document.getElementById('movie-director').innerText = movie.director || 'Unknown';
+                
+                // HANDLE YOUTUBE TRAILER
+                const frame = document.getElementById('hero-frame');
+                
+                // Clear any old iTunes video elements if they exist
+                frame.parentElement.innerHTML = `
+                    <iframe id="hero-frame" class="video-iframe grayscale opacity-60" 
+                        frameborder="0" allow="autoplay; encrypted-media">
+                    </iframe>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 w-full p-8 md:p-20">
+                        <h1 id="movie-title" class="text-6xl md:text-9xl text-white serif italic mb-6 leading-none tracking-tight">${movie.title}</h1>
+                        <div class="flex gap-4 text-[10px] font-mono tracking-[0.2em] uppercase text-gray-400">
+                            <span id="movie-year">${movie.year || 'N/A'}</span> • <span id="movie-director">${movie.director || 'Unknown'}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Re-select the frame since we just overwrote the HTML
+                const newFrame = document.getElementById('hero-frame');
+
+                if (movie.trailerId) {
+                    newFrame.src = `https://www.youtube.com/embed/${movie.trailerId}?autoplay=1&mute=1&controls=0&loop=1&playlist=${movie.trailerId}&showinfo=0&rel=0&iv_load_policy=3&modestbranding=1`;
+                } else {
+                    // Fallback: Show Poster if no video
+                    newFrame.parentElement.style.backgroundImage = `url('${movie.posterUrl}')`;
+                    newFrame.parentElement.style.backgroundSize = 'cover';
+                    newFrame.style.display = 'none';
+                }
+
+                // Handle Gallery
+                const galleryContainer = document.getElementById('gallery-grid');
+                if (movie.gallery && movie.gallery.length > 0) {
+                    galleryContainer.innerHTML = movie.gallery.map(imgUrl => `
+                        <div class="overflow-hidden border border-gray-800 opacity-80 hover:opacity-100 transition duration-700 h-64">
+                            <img src="${imgUrl}" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700 hover:scale-105">
+                        </div>
+                    `).join('');
+                } else {
+                    galleryContainer.innerHTML = `<p class="text-gray-600 text-sm italic">No gallery images available.</p>`;
+                }
+
+                // Handle Soundtrack
+                const soundContainer = document.getElementById('soundtrack-list');
+                if (movie.soundtrack && movie.soundtrack.length > 0) {
+                    soundContainer.innerHTML = movie.soundtrack.map((track, i) => `
+                        <div class="flex justify-between items-center py-5 border-b border-gray-900 hover:bg-white/5 px-4 cursor-pointer group transition duration-300">
+                            <div class="flex items-center gap-6">
+                                <span class="text-xs font-mono text-gray-600 group-hover:text-white transition">0${i+1}</span>
+                                <span class="text-gray-400 group-hover:text-white text-lg serif italic transition">${track.title}</span>
+                            </div>
+                            <span class="font-mono text-xs text-gray-600">${track.duration || ''}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    soundContainer.innerHTML = `<p class="text-gray-600 text-sm italic py-4">No soundtrack data available.</p>`;
+                }
+
+                document.getElementById('movie-content').classList.remove('opacity-0');
+
+            } catch (error) { console.error('Error:', error); alert("Could not load movie data."); }
+        }
+        loadMovie();
+    </script>
+</body>
+</html>
