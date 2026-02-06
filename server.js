@@ -1,26 +1,35 @@
 require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const path = require('path');
-
-// Import Routes
-const movieRoutes = require('./routes/movies');
-const authRoutes = require('./routes/auth');
+const cors = require('cors');
+const { connectDB } = require('./config/db');
+const errorHandler = require('./middleware/errorHandler');
+const auth = require('./middleware/auth');
 
 const app = express();
 
-// Middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.static('src')); // Serve Frontend
+app.use(express.static(path.join(__dirname, 'src')));
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/movies', movieRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/movies', require('./routes/movies'));
 
-// Database Connection
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("Connected to MongoDB"))
-    .catch(err => console.error("MongoDB Connection Error:", err));
+// Private user routes
+app.use('/api/users', auth, require('./routes/users'));
+
+app.get('/api/health', (req, res) => res.json({ ok: true }));
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+connectDB(process.env.MONGO_URI)
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+    })
+    .catch(err => {
+        console.error('MongoDB Connection Error:', err);
+        process.exit(1);
+    });

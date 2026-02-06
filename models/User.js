@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true, unique: true },
+    username: { type: String, required: true, unique: true, trim: true, minlength: 3, maxlength: 24 },
     password: { type: String, required: true },
-    // Storing favorites as ObjectIds references the Movie collection [cite: 13]
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }] 
-});
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
+}, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

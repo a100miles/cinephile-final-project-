@@ -1,1 +1,14 @@
 @import "tailwindcss";
+
+:root {
+    --bg: #0b0c10;
+    --panel: rgba(255, 255, 255, 0.04);
+    --stroke: rgba(255, 255, 255, 0.10);
+    --text: rgba(255, 255, 255, 0.86);
+    --muted: rgba(255, 255, 255, 0.60);
+    --soft: rgba(255, 255, 255, 0.12);
+    --accent: #f5c518; /* IMDb-like accent */
+}
+
+html, body { background: var(--bg); color: var(--text); }
+a { color: inherit; }
