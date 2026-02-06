@@ -18,9 +18,11 @@
         <p class="text-white/60 text-sm mb-8">Create an account to save your Top 5.</p>
         
         <form id="signupForm" class="space-y-4">
-            <input id="username" class="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" placeholder="Username" />
-            <input id="password" type="password" class="w-full rounded-xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]" placeholder="Password (min 6)" />
-            <button class="w-full rounded-xl bg-[var(--accent)] text-black py-3 text-sm font-medium hover:brightness-95">Create account</button>
+        <input id="username" placeholder="Username" class="..." />
+        <input id="email" placeholder="Email" class="..." />
+        <input id="password" type="password" placeholder="Password" class="..." />
+        <input id="confirmPassword" type="password" placeholder="Confirm password" class="..." />
+        <button class="...">Create account</button>
         </form>
     
         <div class="mt-6 text-sm text-white/60">
@@ -32,19 +34,23 @@
     </div>
 
 <script>
-  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+
     try {
-      await axios.post('/api/auth/register', {
-        username: document.getElementById('username').value,
-        password: document.getElementById('password').value
-      });
-      alert('Account created. Please login.');
-      window.location.href = 'login.html';
+        await axios.post('/api/auth/register', {
+            username: document.getElementById('username').value,
+            email: document.getElementById('email').value,
+            password: document.getElementById('password').value,
+            confirmPassword: document.getElementById('confirmPassword').value
+        });
+
+        alert('Account created. Please login.');
+        window.location.href = 'login.html';
     } catch (err) {
-      alert(err.response?.data?.error || 'Sign up failed');
+        alert(err.response?.data?.error || 'Sign up failed');
     }
-  });
+});
 </script>
 </body>
 </html>

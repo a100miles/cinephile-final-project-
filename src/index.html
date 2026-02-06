@@ -1,203 +1,240 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Cinephile Archive</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Cinephile Archive</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
 
-  <link href="/output.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+	<link href="/output.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 </head>
 
 <body class="min-h-screen font-sans">
-  <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/60 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
-      <a href="index.html" class="font-serif text-xl tracking-wide">
-        <span class="text-[var(--accent)]">Cine</span>phile
-      </a>
+	<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/60 border-b border-white/10">
+		<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
+			<a href="index.html" class="font-serif text-xl tracking-wide">
+				<span class="text-[var(--accent)]">Cine</span>phile
+			</a>
 
-      <div class="flex-1 max-w-xl relative">
-        <input id="search-input"
-          class="w-full rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
-          placeholder="Search TMDB…" />
-        <div id="search-results"
-          class="absolute mt-2 w-full rounded-2xl overflow-hidden hidden border border-white/10 bg-black/90 shadow-2xl"></div>
-      </div>
+			<div class="flex-1 max-w-xl relative">
+				<input
+					id="search-input"
+					class="w-full rounded-full bg-white/5 border border-white/10 px-5 py-2.5 text-sm text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+					placeholder="Search TMDB…"
+				/>
+				<div
+					id="search-results"
+					class="absolute mt-2 w-full rounded-2xl overflow-hidden hidden border border-white/10 bg-black/90 shadow-2xl"
+				></div>
+			</div>
 
-      <div id="auth-section" class="text-xs text-white/80 flex items-center gap-3"></div>
-    </div>
-  </nav>
+			<div id="auth-section" class="text-xs text-white/80 flex items-center gap-3"></div>
+		</div>
+	</nav>
 
-  <header class="pt-28 pb-10">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-10">
-        <h1 class="font-serif text-4xl md:text-6xl leading-tight">
-          Explore films. Save your top 5.
-        </h1>
-        <p class="mt-4 text-white/60 max-w-2xl">
-          TMDB search for discovery + curated collection in your database.
-        </p>
+	<header class="pt-28 pb-10">
+		<div class="max-w-7xl mx-auto px-6">
+			<div class="rounded-3xl border border-white/10 bg-gradient-to-br from-white/5 to-transparent p-10">
+				<h1 class="font-serif text-4xl md:text-6xl leading-tight">
+					Explore films. Save your top 5.
+				</h1>
+				<p class="mt-4 text-white/60 max-w-2xl">
+					TMDB search for discovery + curated collection in your database.
+				</p>
 
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a href="profile.html"
-             class="px-4 py-2 rounded-full bg-[var(--accent)] text-black text-sm font-medium hover:brightness-95">
-            Profile
-          </a>
-          <button id="btn-refresh"
-             class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/80 hover:bg-white/10">
-            Refresh collection
-          </button>
-        </div>
-      </div>
-    </div>
-  </header>
+				<div class="mt-8 flex flex-wrap gap-3">
+					<a
+						href="profile.html"
+						class="px-4 py-2 rounded-full bg-[var(--accent)] text-black text-sm font-medium hover:brightness-95"
+					>
+						Profile
+					</a>
 
-  <main class="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-10">
-    <section class="lg:col-span-9">
-      <div class="flex items-end justify-between mb-6">
-        <h2 class="font-serif text-2xl">Curated collection</h2>
-        <span class="text-xs text-white/50">Local DB</span>
-      </div>
+					<button
+						id="btn-refresh"
+						class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/80 hover:bg-white/10"
+					>
+						Refresh collection
+					</button>
+				</div>
+			</div>
+		</div>
+	</header>
 
-      <div id="db-movies" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"></div>
-    </section>
+	<main class="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-10">
+		<section class="lg:col-span-9">
+			<div class="flex items-end justify-between mb-6">
+				<h2 class="font-serif text-2xl">Curated collection</h2>
+				<span class="text-xs text-white/50">Local DB</span>
+			</div>
 
-    <aside class="lg:col-span-3">
-      <div class="sticky top-28 rounded-3xl border border-white/10 bg-white/5 p-6">
-        <div class="flex items-center justify-between">
-          <h3 class="font-serif text-xl">Your Top 5</h3>
-          <span class="text-[10px] text-white/50 uppercase tracking-widest">Favorites</span>
-        </div>
-        <div id="fav-box" class="mt-4 text-sm text-white/60">Login to see your favorites.</div>
-      </div>
-    </aside>
-  </main>
+			<div id="db-movies" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+		</section>
 
-<script>
-  const authDiv = document.getElementById('auth-section');
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
+		<aside class="lg:col-span-3">
+			<div class="sticky top-28 rounded-3xl border border-white/10 bg-white/5 p-6">
+				<div class="flex items-center justify-between">
+					<h3 class="font-serif text-xl">Your Top 5</h3>
+					<span class="text-[10px] text-white/50 uppercase tracking-widest">Favorites</span>
+				</div>
+				<div id="fav-box" class="mt-4 text-sm text-white/60">Login to see your favorites.</div>
+			</div>
+		</aside>
+	</main>
 
-  function setAuthUI() {
-    if (token && username) {
-      authDiv.innerHTML = `
-        <span class="hidden md:inline text-white/60">Hi, ${username}</span>
-        <a href="profile.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Profile</a>
-        <button onclick="logout()" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Logout</button>
-      `;
-    } else {
-      authDiv.innerHTML = `
-        <a href="login.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Login</a>
-        <a href="signup.html" class="px-3 py-1.5 rounded-full bg-[var(--accent)] text-black hover:brightness-95">Sign up</a>
-      `;
-    }
-  }
-  function logout() { localStorage.clear(); location.reload(); }
-  setAuthUI();
+	<script>
+		const authDiv = document.getElementById('auth-section');
+		const token = localStorage.getItem('token');
+		const username = localStorage.getItem('username');
 
-  // TMDB search
-  const searchInput = document.getElementById('search-input');
-  const resultsBox = document.getElementById('search-results');
-  let debounceTimer;
+		function setAuthUI() {
+			if (token && username) {
+				authDiv.innerHTML = `
+					<span class="hidden md:inline text-white/60">Hi, ${username}</span>
+					<a href="profile.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Profile</a>
+					<button onclick="logout()" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Logout</button>
+				`;
+			} else {
+				authDiv.innerHTML = `
+					<a href="login.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Login</a>
+					<a href="signup.html" class="px-3 py-1.5 rounded-full bg-[var(--accent)] text-black hover:brightness-95">Sign up</a>
+				`;
+			}
+		}
 
-  searchInput.addEventListener('input', e => {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => performSearch(e.target.value), 250);
-  });
+		function logout() {
+			localStorage.clear();
+			location.reload();
+		}
 
-  async function performSearch(query) {
-    if (!query || query.trim().length < 2) { resultsBox.classList.add('hidden'); return; }
-    try {
-      const res = await axios.get(`/api/movies/search?q=${encodeURIComponent(query)}`);
-      if (!res.data?.length) { resultsBox.classList.add('hidden'); return; }
+		setAuthUI();
 
-      resultsBox.innerHTML = res.data.map(m => `
-        <a href="movie.html?tmdbId=${m.id}"
-           class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 border-b border-white/10">
-          <img src="${m.poster || 'https://via.placeholder.com/60x90?text=No+Img'}"
-               class="w-10 h-14 object-cover rounded-md border border-white/10">
-          <div class="min-w-0">
-            <div class="text-sm text-white truncate">${m.title}</div>
-            <div class="text-xs text-white/50">${m.year}</div>
-          </div>
-        </a>
-      `).join('');
-      resultsBox.classList.remove('hidden');
-    } catch (e) {
-      console.error(e);
-      resultsBox.classList.add('hidden');
-    }
-  }
+		// TMDB search
+		const searchInput = document.getElementById('search-input');
+		const resultsBox = document.getElementById('search-results');
+		let debounceTimer;
 
-  document.addEventListener('click', e => {
-    if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) resultsBox.classList.add('hidden');
-  });
+		searchInput.addEventListener('input', (e) => {
+			clearTimeout(debounceTimer);
+			debounceTimer = setTimeout(() => performSearch(e.target.value), 250);
+		});
 
-  // Local DB movies (public list)
-  async function loadLocalMovies() {
-    const box = document.getElementById('db-movies');
-    box.innerHTML = `<div class="text-white/50 text-sm">Loading…</div>`;
-    try {
-      const res = await axios.get('/api/movies/public');
-      box.innerHTML = res.data.map(m => `
-        <a href="movie.html?id=${m._id}" class="group block">
-          <div class="aspect-[2/3] rounded-2xl overflow-hidden border border-white/10 bg-white/5">
-            <img src="${m.posterUrl || 'https://via.placeholder.com/400x600?text=Poster'}"
-                 class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-500">
-          </div>
-          <div class="mt-3">
-            <div class="text-sm text-white font-medium leading-snug">${m.title}</div>
-            <div class="text-xs text-white/50 mt-1">${m.director || 'Unknown'} • ${m.year || 'N/A'}</div>
-          </div>
-        </a>
-      `).join('');
-    } catch (e) {
-      console.error(e);
-      box.innerHTML = `<div class="text-white/50 text-sm">Failed to load collection.</div>`;
-    }
-  }
+		async function performSearch(query) {
+			if (!query || query.trim().length < 2) {
+				resultsBox.classList.add('hidden');
+				return;
+			}
 
-  // Favorites sidebar
-  async function loadFavorites() {
-    const favBox = document.getElementById('fav-box');
-    if (!token) return;
+			try {
+				const res = await axios.get(`/api/movies/search?q=${encodeURIComponent(query)}`);
 
-    try {
-      const res = await axios.get('/api/users/profile', { headers: { Authorization: `Bearer ${token}` } });
-      const fav = res.data.favorites || [];
-      if (!fav.length) {
-        favBox.innerHTML = `<div class="text-white/60">No favorites yet.</div>`;
-        return;
-      }
-      favBox.innerHTML = `
-        <div class="space-y-3">
-          ${fav.map(m => `
-            <a class="flex gap-3 items-center hover:bg-white/5 rounded-xl p-2"
-               href="movie.html?id=${m._id}">
-              <img src="${m.posterUrl || 'https://via.placeholder.com/60x90'}"
-                   class="w-10 h-14 object-cover rounded-lg border border-white/10">
-              <div class="min-w-0">
-                <div class="text-sm text-white truncate">${m.title}</div>
-                <div class="text-xs text-white/50">${m.year || 'N/A'}</div>
-              </div>
-            </a>
-          `).join('')}
-        </div>
-      `;
-    } catch (e) {
-      console.error(e);
-      favBox.innerHTML = `<div class="text-white/60">Could not load favorites.</div>`;
-    }
-  }
+				if (!res.data || res.data.length === 0) {
+					resultsBox.classList.add('hidden');
+					return;
+				}
 
-  document.getElementById('btn-refresh').addEventListener('click', loadLocalMovies);
+				resultsBox.innerHTML = res.data.map((m) => `
+					<a href="movie.html?tmdbId=${m.id}"
+						class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 border-b border-white/10">
+						<img src="${m.poster || 'https://via.placeholder.com/60x90?text=No+Img'}"
+							class="w-10 h-14 object-cover rounded-md border border-white/10">
+						<div class="min-w-0">
+							<div class="text-sm text-white truncate">${m.title}</div>
+							<div class="text-xs text-white/50">${m.year}</div>
+						</div>
+					</a>
+				`).join('');
 
-  loadLocalMovies();
-  loadFavorites();
-</script>
+				resultsBox.classList.remove('hidden');
+			} catch (e) {
+				console.error(e);
+				resultsBox.classList.add('hidden');
+			}
+		}
+
+		document.addEventListener('click', (e) => {
+			if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+				resultsBox.classList.add('hidden');
+			}
+		});
+
+		// Local DB movies
+		async function loadLocalMovies() {
+			const box = document.getElementById('db-movies');
+			box.innerHTML = `<div class="text-white/50 text-sm">Loading…</div>`;
+
+			try {
+				const res = await axios.get('/api/movies/public');
+
+				box.innerHTML = res.data.map((m) => `
+					<a href="movie.html?id=${m._id}" class="group block">
+						<div class="aspect-[2/3] rounded-2xl overflow-hidden border border-white/10 bg-white/5">
+							<img src="${m.posterUrl || 'https://via.placeholder.com/400x600?text=Poster'}"
+								class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-500">
+						</div>
+						<div class="mt-3">
+							<div class="text-sm text-white font-medium leading-snug">${m.title}</div>
+							<div class="text-xs text-white/50 mt-1">${m.director || 'Unknown'} • ${m.year || 'N/A'}</div>
+						</div>
+					</a>
+				`).join('');
+			} catch (e) {
+				console.error(e);
+				box.innerHTML = `<div class="text-white/50 text-sm">Failed to load collection.</div>`;
+			}
+		}
+
+		// Favorites sidebar (works for tmdb + local)
+		async function loadFavorites() {
+			const favBox = document.getElementById('fav-box');
+			if (!token) return;
+
+			try {
+				const res = await axios.get('/api/users/profile', {
+					headers: { Authorization: `Bearer ${token}` }
+				});
+
+				const fav = res.data.favorites || [];
+
+				if (!fav.length) {
+					favBox.innerHTML = `<div class="text-white/60">No favorites yet.</div>`;
+					return;
+				}
+
+				favBox.innerHTML = `
+					<div class="space-y-3">
+						${fav.map((m) => {
+							const href = (m.source === 'tmdb')
+								? `movie.html?tmdbId=${m.movieId}`
+								: `movie.html?id=${m.movieId}`;
+
+							return `
+								<a class="flex gap-3 items-center hover:bg-white/5 rounded-xl p-2" href="${href}">
+									<img src="${m.posterUrl || 'https://via.placeholder.com/60x90'}"
+										class="w-10 h-14 object-cover rounded-lg border border-white/10">
+									<div class="min-w-0">
+										<div class="text-sm text-white truncate">${m.title}</div>
+										<div class="text-xs text-white/50">${m.year || 'N/A'}</div>
+									</div>
+								</a>
+							`;
+						}).join('')}
+					</div>
+				`;
+			} catch (e) {
+				console.error(e);
+				favBox.innerHTML = `<div class="text-white/60">Could not load favorites.</div>`;
+			}
+		}
+
+		document.getElementById('btn-refresh').addEventListener('click', loadLocalMovies);
+
+		loadLocalMovies();
+		loadFavorites();
+	</script>
 </body>
 </html>

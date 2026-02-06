@@ -1,193 +1,257 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Movie • Cinephile</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Movie • Cinephile</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
 
-  <link href="/output.css" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+	<link href="/output.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 </head>
 
 <body class="min-h-screen font-sans">
-  <nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/60 border-b border-white/10">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="index.html" class="font-serif text-xl tracking-wide">
-        <span class="text-[var(--accent)]">Cine</span>phile
-      </a>
-      <div class="flex items-center gap-3">
-        <a href="profile.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-sm">Profile</a>
-        <span id="who" class="text-xs text-white/60"></span>
-      </div>
-    </div>
-  </nav>
+	<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/60 border-b border-white/10">
+		<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+			<a href="index.html" class="font-serif text-xl tracking-wide">
+				<span class="text-[var(--accent)]">Cine</span>phile
+			</a>
+			<div class="flex items-center gap-3">
+				<a href="profile.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 text-sm">Profile</a>
+				<span id="who" class="text-xs text-white/60"></span>
+			</div>
+		</div>
+	</nav>
 
-  <main class="pt-24 pb-24">
-    <section class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
-      <div class="lg:col-span-5">
-        <div class="rounded-3xl overflow-hidden border border-white/10 bg-white/5">
-          <img id="poster" class="w-full aspect-[2/3] object-cover" alt="poster">
-        </div>
+	<main class="pt-24 pb-24">
+		<section class="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-10">
+			<div class="lg:col-span-5">
+				<div class="rounded-3xl overflow-hidden border border-white/10 bg-white/5">
+					<img id="poster" class="w-full aspect-[2/3] object-cover" alt="poster">
+				</div>
 
-        <div class="mt-5 flex gap-3">
-          <button id="favBtn" class="hidden flex-1 rounded-2xl bg-[var(--accent)] text-black py-3 text-sm font-medium hover:brightness-95">
-            Add to Top 5
-          </button>
-          <a href="index.html" class="flex-1 text-center rounded-2xl bg-white/5 border border-white/10 py-3 text-sm hover:bg-white/10">
-            Back
-          </a>
-        </div>
+				<div class="mt-5 flex gap-3">
+					<button
+						id="favBtn"
+						class="hidden flex-1 rounded-2xl bg-[var(--accent)] text-black py-3 text-sm font-medium hover:brightness-95"
+					>
+						Add to Top 5
+					</button>
 
-        <div id="favHint" class="mt-3 text-xs text-white/50"></div>
-      </div>
+					<a
+						href="index.html"
+						class="flex-1 text-center rounded-2xl bg-white/5 border border-white/10 py-3 text-sm hover:bg-white/10"
+					>
+						Back
+					</a>
+				</div>
 
-      <div class="lg:col-span-7">
-        <h1 id="title" class="font-serif text-4xl md:text-6xl leading-tight"></h1>
-        <div class="mt-3 text-sm text-white/60">
-          <span id="year"></span> • <span id="director"></span> • Rating: <span id="rating"></span>/10
-        </div>
+				<div id="favHint" class="mt-3 text-xs text-white/50"></div>
+			</div>
 
-        <p id="overview" class="mt-6 text-white/70 leading-relaxed"></p>
+			<div class="lg:col-span-7">
+				<h1 id="title" class="font-serif text-4xl md:text-6xl leading-tight"></h1>
+				<div class="mt-3 text-sm text-white/60">
+					<span id="year"></span> • <span id="director"></span> • Rating: <span id="rating"></span>/10
+				</div>
 
-        <div class="mt-6">
-          <div class="text-xs uppercase tracking-widest text-white/50 mb-2">Stars</div>
-          <div id="actors" class="text-sm text-white/70"></div>
-        </div>
+				<p id="overview" class="mt-6 text-white/70 leading-relaxed"></p>
 
-        <div class="mt-10 rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
-          <div class="px-5 py-4 flex items-center justify-between">
-            <div class="font-serif text-xl">Trailer</div>
-            <div id="trailerNote" class="text-xs text-white/50"></div>
-          </div>
-          <div class="border-t border-white/10">
-            <div id="trailerBox" class="aspect-video bg-black"></div>
-          </div>
-        </div>
+				<div class="mt-6">
+					<div class="text-xs uppercase tracking-widest text-white/50 mb-2">Stars</div>
+					<div id="actors" class="text-sm text-white/70"></div>
+				</div>
 
-        <div class="mt-10 grid grid-cols-1 xl:grid-cols-2 gap-8">
-          <section class="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
-            <div class="px-5 py-4 font-serif text-xl">Soundtrack</div>
-            <div class="border-t border-white/10">
-              <div id="soundtrack" class="divide-y divide-white/10"></div>
-              <div id="player" class="hidden border-t border-white/10 aspect-video bg-black"></div>
-            </div>
-          </section>
+				<div class="mt-10 rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+					<div class="px-5 py-4 flex items-center justify-between">
+						<div class="font-serif text-xl">Trailer</div>
+						<div id="trailerNote" class="text-xs text-white/50"></div>
+					</div>
+					<div class="border-t border-white/10">
+						<div id="trailerBox" class="aspect-video bg-black"></div>
+					</div>
+				</div>
 
-          <section class="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
-            <div class="px-5 py-4 font-serif text-xl">Gallery</div>
-            <div id="gallery" class="grid grid-cols-2 gap-2 p-3 border-t border-white/10"></div>
-          </section>
-        </div>
-      </div>
-    </section>
-  </main>
+				<div class="mt-10 grid grid-cols-1 xl:grid-cols-2 gap-8">
+					<section class="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+						<div class="px-5 py-4 font-serif text-xl">Soundtrack (previews)</div>
+						<div class="border-t border-white/10">
+							<div id="soundtrack" class="divide-y divide-white/10"></div>
+							<div id="player" class="hidden border-t border-white/10 p-4 bg-black"></div>
+						</div>
+					</section>
 
-<script>
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
-  document.getElementById('who').textContent = username ? `Hi, ${username}` : '';
+					<section class="rounded-3xl border border-white/10 bg-white/5 overflow-hidden">
+						<div class="px-5 py-4 font-serif text-xl">Gallery</div>
+						<div id="gallery" class="grid grid-cols-2 gap-2 p-3 border-t border-white/10"></div>
+					</section>
+				</div>
+			</div>
+		</section>
+	</main>
 
-  const params = new URLSearchParams(location.search);
-  const localId = params.get('id');
-  const tmdbId = params.get('tmdbId');
+	<script>
+		const token = localStorage.getItem('token');
+		const username = localStorage.getItem('username');
+		document.getElementById('who').textContent = username ? `Hi, ${username}` : '';
 
-  if (!localId && !tmdbId) location.href = 'index.html';
+		const params = new URLSearchParams(location.search);
+		const localId = params.get('id');
+		const tmdbId = params.get('tmdbId');
 
-  async function loadMovie() {
-    const url = tmdbId ? `/api/movies/tmdb/${tmdbId}` : `/api/movies/public/${localId}`;
-    const res = await fetch(url);
-    const movie = await res.json();
+		if (!localId && !tmdbId) location.href = 'index.html';
 
-    document.title = `${movie.title} • Cinephile`;
-    document.getElementById('title').textContent = movie.title || '';
-    document.getElementById('year').textContent = movie.year || 'N/A';
-    document.getElementById('director').textContent = movie.director || 'Unknown';
-    document.getElementById('rating').textContent = (movie.tmdbRating ?? movie.ratings?.imdb ?? 'N/A');
-    document.getElementById('overview').textContent = movie.overview || '';
-    document.getElementById('actors').textContent = (movie.actors && movie.actors.length) ? movie.actors.join(', ') : 'N/A';
+		function formatRating(movie) {
+			if (typeof movie.tmdbRating === 'number') return movie.tmdbRating.toFixed(1);
+			if (typeof movie.ratings?.imdb === 'string') return movie.ratings.imdb;
+			return 'N/A';
+		}
 
-    document.getElementById('poster').src = movie.posterUrl || 'https://via.placeholder.com/400x600?text=Poster';
+		async function loadMovie() {
+			const url = tmdbId ? `/api/movies/tmdb/${tmdbId}` : `/api/movies/public/${localId}`;
+			const res = await fetch(url);
+			const movie = await res.json();
 
-    // Trailer (no sepia/grayscale)
-    const trailerBox = document.getElementById('trailerBox');
-    if (movie.trailerId) {
-      trailerBox.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${movie.trailerId}?autoplay=0&controls=1&rel=0"
-        title="Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
-    } else {
-      document.getElementById('trailerNote').textContent = 'No trailer available';
-      trailerBox.innerHTML = `<div class="w-full h-full grid place-items-center text-white/50 text-sm">No trailer</div>`;
-    }
+			document.title = `${movie.title} • Cinephile`;
+			document.getElementById('title').textContent = movie.title || '';
+			document.getElementById('year').textContent = movie.year || 'N/A';
+			document.getElementById('director').textContent = movie.director || 'Unknown';
+			document.getElementById('rating').textContent = formatRating(movie);
+			document.getElementById('overview').textContent = movie.overview || '';
+			document.getElementById('actors').textContent = (movie.actors && movie.actors.length) ? movie.actors.join(', ') : 'N/A';
 
-    // Gallery
-    const gal = document.getElementById('gallery');
-    const images = movie.gallery || [];
-    gal.innerHTML = images.length ? images.slice(0,6).map(url => `
-      <div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
-        <img src="${url}" class="w-full h-36 object-cover hover:scale-[1.03] transition duration-500">
-      </div>
-    `).join('') : `<div class="p-5 text-sm text-white/50 col-span-2">No gallery images.</div>`;
+			document.getElementById('poster').src = movie.posterUrl || 'https://via.placeholder.com/400x600?text=Poster';
 
-    // Soundtrack (playable)
-    const sound = document.getElementById('soundtrack');
-    const tracks = movie.soundtrack || [];
-    if (!tracks.length) {
-      sound.innerHTML = `<div class="p-5 text-sm text-white/50">No soundtrack data.</div>`;
-    } else {
-      sound.innerHTML = tracks.map((t, i) => `
-        <button class="w-full text-left px-5 py-4 hover:bg-white/5 flex items-center justify-between"
-          onclick="playTrack('${t.ytId || ''}')">
-          <span class="text-sm text-white/80">${String(i+1).padStart(2,'0')} • ${t.title}</span>
-          <span class="text-xs text-white/50">${t.duration || ''}</span>
-        </button>
-      `).join('');
-    }
+			// Trailer
+			const trailerBox = document.getElementById('trailerBox');
+			const trailerNote = document.getElementById('trailerNote');
 
-    // Favorites (only local movies)
-    const favBtn = document.getElementById('favBtn');
-    const favHint = document.getElementById('favHint');
+			if (movie.trailerId) {
+				trailerBox.innerHTML = `
+					<iframe
+						class="w-full h-full"
+						src="https://www.youtube.com/embed/${movie.trailerId}?autoplay=0&controls=1&rel=0"
+						title="Trailer"
+						frameborder="0"
+						allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+						allowfullscreen
+					></iframe>
+				`;
+			} else {
+				trailerNote.textContent = 'No trailer available';
+				trailerBox.innerHTML = `<div class="w-full h-full grid place-items-center text-white/50 text-sm">No trailer</div>`;
+			}
 
-    if (!localId) {
-      favHint.textContent = 'Favorites work for local DB movies (curated collection).';
-      return;
-    }
+			// Gallery
+			const gal = document.getElementById('gallery');
+			const images = movie.gallery || [];
 
-    if (!token) {
-      favHint.innerHTML = `Login to add to favorites.`;
-      return;
-    }
+			gal.innerHTML = images.length
+				? images.slice(0, 6).map((url) => `
+					<div class="rounded-2xl overflow-hidden border border-white/10 bg-black">
+						<img src="${url}" class="w-full h-36 object-cover hover:scale-[1.03] transition duration-500">
+					</div>
+				`).join('')
+				: `<div class="p-5 text-sm text-white/50 col-span-2">No gallery images.</div>`;
 
-    favBtn.classList.remove('hidden');
-    favBtn.addEventListener('click', async () => {
-      try {
-        const r = await axios.put(`/api/users/favorites/${localId}`, {}, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        const list = r.data.favorites || [];
-        favHint.textContent = `Saved. Your favorites: ${list.length}/5`;
-      } catch (e) {
-        alert(e.response?.data?.error || 'Failed to update favorites');
-      }
-    });
-  }
+			// Favorites (TMDB + local)
+			const favBtn = document.getElementById('favBtn');
+			const favHint = document.getElementById('favHint');
 
-  window.playTrack = (ytId) => {
-    if (!ytId) return;
-    const player = document.getElementById('player');
-    player.classList.remove('hidden');
-    player.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${ytId}?autoplay=1&rel=0"
-      title="Soundtrack" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
-    player.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
+			if (!token) {
+				favHint.textContent = 'Login to add favorites.';
+			} else {
+				favBtn.classList.remove('hidden');
 
-  loadMovie().catch(e => {
-    console.error(e);
-    alert('Could not load movie.');
-    location.href = 'index.html';
-  });
-</script>
+				const favPayload = {
+					source: tmdbId ? 'tmdb' : 'local',
+					movieId: tmdbId ? String(tmdbId) : String(localId),
+					title: movie.title || '',
+					year: movie.year || 'N/A',
+					posterUrl: movie.posterUrl || ''
+				};
+
+				favBtn.addEventListener('click', async () => {
+					try {
+						const r = await axios.put('/api/users/favorites', favPayload, {
+							headers: { Authorization: `Bearer ${token}` }
+						});
+
+						const list = r.data.favorites || [];
+						const exists = list.some((f) =>
+							f.source === favPayload.source && String(f.movieId) === String(favPayload.movieId)
+						);
+
+						favBtn.textContent = exists ? 'Remove from Top 5' : 'Add to Top 5';
+						favHint.textContent = `Favorites: ${list.length}/5`;
+					} catch (e) {
+						alert(e.response?.data?.error || 'Failed to update favorites');
+					}
+				});
+
+				favHint.textContent = 'Favorites: click to toggle.';
+			}
+
+			// Soundtracks via iTunes previews
+			await loadAutoSoundtracks(movie);
+		}
+
+		async function loadAutoSoundtracks(movie) {
+			const sound = document.getElementById('soundtrack');
+			sound.innerHTML = `<div class="p-5 text-sm text-white/50">Loading soundtrack previews…</div>`;
+
+			try {
+				const r = await axios.get('/api/soundtracks', {
+					params: { title: movie.title, year: movie.year, limit: 12 }
+				});
+
+				const tracks = r.data || [];
+
+				if (!tracks.length) {
+					sound.innerHTML = `<div class="p-5 text-sm text-white/50">No soundtrack previews found.</div>`;
+					return;
+				}
+
+				sound.innerHTML = tracks.map((t, i) => `
+					<button
+						class="w-full text-left px-5 py-4 hover:bg-white/5 flex items-center justify-between"
+						onclick="playPreview('${t.previewUrl}')"
+					>
+						<span class="text-sm text-white/80">
+							${String(i + 1).padStart(2, '0')} • ${t.trackName} — ${t.artistName}
+						</span>
+						<span class="text-xs text-white/50">Preview</span>
+					</button>
+				`).join('');
+			} catch (e) {
+				console.error(e);
+				sound.innerHTML = `<div class="p-5 text-sm text-white/50">Failed to load soundtrack previews.</div>`;
+			}
+		}
+
+		window.playPreview = (url) => {
+			if (!url) return;
+
+			const player = document.getElementById('player');
+			player.classList.remove('hidden');
+
+			player.innerHTML = `
+				<audio controls autoplay class="w-full">
+					<source src="${url}">
+				</audio>
+			`;
+
+			player.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		};
+
+		loadMovie().catch((e) => {
+			console.error(e);
+			alert('Could not load movie.');
+			location.href = 'index.html';
+		});
+	</script>
 </body>
 </html>

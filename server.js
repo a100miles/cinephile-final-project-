@@ -14,6 +14,7 @@ app.use(express.static(path.join(__dirname, 'src')));
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/movies', require('./routes/movies'));
+app.use('/api/soundtracks', require('./routes/soundtracks'));
 
 // Private user routes
 app.use('/api/users', auth, require('./routes/users'));
