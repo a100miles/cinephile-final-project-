@@ -1,36 +1,71 @@
 @import "tailwindcss";
 
+:root {
+    --bg: #070a12;
+    --panel: rgba(255, 255, 255, 0.045);
+    --stroke: rgba(255, 255, 255, 0.085);
+    --text: rgba(255, 255, 255, 0.86);
+    --muted: rgba(255, 255, 255, 0.60);
+
+    /* Accent: iOS-like blue */
+    --accent: #0a84ff;
+}
+
+html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Google Sans Flex", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lowercase by default */
+body {
+    text-transform: lowercase;
+}
+
+/* Exceptions */
+.keep-case {
+    text-transform: none;
+}
+
+/* Softer glass */
 .glass {
-	background: rgba(255, 255, 255, 0.06);
-	border: 1px solid rgba(255, 255, 255, 0.10);
-	backdrop-filter: blur(18px);
-	-webkit-backdrop-filter: blur(18px);
+    background: rgba(255, 255, 255, 0.055);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
 }
 
 .glass-chip {
-	background: rgba(255, 255, 255, 0.08);
-	border: 1px solid rgba(255, 255, 255, 0.12);
-	backdrop-filter: blur(18px);
-	-webkit-backdrop-filter: blur(18px);
-	transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+    background: rgba(255, 255, 255, 0.075);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.30);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: transform 220ms ease, background 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
 
 .glass-chip:hover {
-	background: rgba(255, 255, 255, 0.12);
-	border-color: rgba(255, 255, 255, 0.18);
-	transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.11);
+    border-color: rgba(255, 255, 255, 0.18);
+    transform: translateY(-1px);
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.40);
 }
 
-
-:root {
-    --bg: #0b0c10;
-    --panel: rgba(255, 255, 255, 0.04);
-    --stroke: rgba(255, 255, 255, 0.10);
-    --text: rgba(255, 255, 255, 0.86);
-    --muted: rgba(255, 255, 255, 0.60);
-    --soft: rgba(255, 255, 255, 0.12);
-    --accent: #f5c518; /* IMDb-like accent */
+/* Subtle entrance animation */
+@keyframes rise{
+	from{ opacity:0; transform:translateY(10px); filter:blur(2px); }
+	to{ opacity:1; transform:translateY(0); filter:blur(0); }
+}
+.animate-rise{
+	animation:rise 520ms cubic-bezier(.2,.9,.2,1) both;
 }
 
-html, body { background: var(--bg); color: var(--text); }
-a { color: inherit; }
+@media (prefers-reduced-motion: reduce){
+	.animate-rise{ animation:none; }
+	*{ transition:none !important; scroll-behavior:auto !important; }
+}
