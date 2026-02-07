@@ -1,25 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
+
 const {
-    getAllPublic,
-    getOnePublic,
-    createMovie,
-    updateMovie,
-    deleteMovie,
-    searchTMDB,
-    getTMDBDetails
+	getAllPublic,
+	getOnePublic,
+	createMovie,
+	updateMovie,
+	deleteMovie,
+	searchTMDB,
+	getTMDBDetails,
+	nowPlayingTMDB // NEW
 } = require('../controllers/movieController');
 
-// Public browsing
 router.get('/public', getAllPublic);
 router.get('/public/:id', getOnePublic);
 
-// TMDB (external API)
 router.get('/search', searchTMDB);
 router.get('/tmdb/:id', getTMDBDetails);
 
-// Private CRUD (for grading requirements)
+// NEW (public)
+router.get('/now-playing', nowPlayingTMDB);
+
 router.post('/', auth, createMovie);
 router.put('/:id', auth, updateMovie);
 router.delete('/:id', auth, deleteMovie);

@@ -1,56 +1,118 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Sign up • Cinephile</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Sign up • Cinephile</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@100..1000&family=Lora:wght@400..700&display=swap" rel="stylesheet">
 
-    <link href="/output.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
+	<link href="/output.css" rel="stylesheet" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.2/axios.min.js"></script>
 </head>
-<body class="min-h-screen flex items-center justify-center font-sans px-6">
-    <div class="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-8">
-        <h1 class="font-serif text-3xl mb-2">Sign up</h1>
-        <p class="text-white/60 text-sm mb-8">Create an account to save your Top 5.</p>
-        
-        <form id="signupForm" class="space-y-4">
-        <input id="username" placeholder="Username" class="..." />
-        <input id="email" placeholder="Email" class="..." />
-        <input id="password" type="password" placeholder="Password" class="..." />
-        <input id="confirmPassword" type="password" placeholder="Confirm password" class="..." />
-        <button class="...">Create account</button>
-        </form>
-    
-        <div class="mt-6 text-sm text-white/60">
-            Have an account? <a class="text-white underline" href="login.html">Login</a>
-        </div>
-        <div class="mt-2 text-sm text-white/60">
-            <a class="text-white/80 underline" href="index.html">Back to home</a>
-        </div>
-    </div>
 
-<script>
-document.getElementById('signupForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
+<body class="min-h-screen font-sans">
+	<div class="min-h-screen grid place-items-center px-6 py-16">
+		<div class="w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-8">
+			<div class="flex items-center justify-between gap-4">
+				<h1 class="font-serif text-3xl">Sign up</h1>
+				<a href="index.html" class="text-sm text-white/60 hover:text-white">Home</a>
+			</div>
 
-    try {
-        await axios.post('/api/auth/register', {
-            username: document.getElementById('username').value,
-            email: document.getElementById('email').value,
-            password: document.getElementById('password').value,
-            confirmPassword: document.getElementById('confirmPassword').value
-        });
+			<p class="mt-2 text-sm text-white/60">
+				Create an account to save your Top 5 and avatar.
+			</p>
 
-        alert('Account created. Please login.');
-        window.location.href = 'login.html';
-    } catch (err) {
-        alert(err.response?.data?.error || 'Sign up failed');
-    }
-});
-</script>
+			<form id="signupForm" class="mt-8 space-y-4">
+				<label class="block">
+					<span class="text-xs uppercase tracking-widest text-white/50">Username</span>
+					<input
+						id="username"
+						autocomplete="username"
+						class="mt-2 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40
+							focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+						placeholder="cinephile"
+					/>
+				</label>
+
+				<label class="block">
+					<span class="text-xs uppercase tracking-widest text-white/50">Email</span>
+					<input
+						id="email"
+						type="email"
+						autocomplete="email"
+						class="mt-2 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40
+							focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+						placeholder="cine@domain.com"
+					/>
+				</label>
+
+				<label class="block">
+					<span class="text-xs uppercase tracking-widest text-white/50">Password</span>
+					<input
+						id="password"
+						type="password"
+						autocomplete="new-password"
+						class="mt-2 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40
+							focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+						placeholder="min 6 chars"
+					/>
+				</label>
+
+				<label class="block">
+					<span class="text-xs uppercase tracking-widest text-white/50">Confirm password</span>
+					<input
+						id="confirmPassword"
+						type="password"
+						autocomplete="new-password"
+						class="mt-2 w-full rounded-2xl bg-black/30 border border-white/10 px-4 py-3 text-sm text-white placeholder-white/40
+							focus:outline-none focus:ring-2 focus:ring-[var(--accent)]"
+						placeholder="repeat password"
+					/>
+				</label>
+
+				<button
+					type="submit"
+					class="w-full rounded-2xl bg-[var(--accent)] text-black py-3 text-sm font-medium hover:brightness-95"
+				>
+					Create account
+				</button>
+
+				<div id="err" class="text-sm text-red-300/90 hidden"></div>
+			</form>
+
+			<div class="mt-6 text-sm text-white/60">
+				Already have an account?
+				<a href="login.html" class="text-white underline underline-offset-4 hover:opacity-90">Login</a>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		document.getElementById('signupForm').addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const err = document.getElementById('err');
+			err.classList.add('hidden');
+			err.textContent = '';
+
+			try {
+				await axios.post('/api/auth/register', {
+					username: document.getElementById('username').value,
+					email: document.getElementById('email').value,
+					password: document.getElementById('password').value,
+					confirmPassword: document.getElementById('confirmPassword').value
+				});
+
+				alert('Account created. Please login.');
+				window.location.href = 'login.html';
+			} catch (error) {
+				err.textContent = error.response?.data?.error || 'Sign up failed';
+				err.classList.remove('hidden');
+			}
+		});
+	</script>
 </body>
 </html>

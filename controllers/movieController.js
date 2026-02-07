@@ -104,6 +104,40 @@ async function getTMDBDetails(req, res) {
     });
 }
 
+async function nowPlayingTMDB(req, res) {
+	const apiKey = process.env.TMDB_API_KEY;
+	const page = Number(req.query.page || 1);
+	const region = (req.query.region || 'default').toUpperCase(); 
+	const language = req.query.language || 'en-US';
+
+	try {
+		const response = await axios.get('https://api.themoviedb.org/3/movie/now_playing', {
+			params: {
+				api_key: apiKey,
+				page,
+				region,
+				language
+			},
+			timeout: 12000
+		});
+
+		const results = (response.data.results || []).slice(0, 12).map((m) => ({
+			id: m.id,
+			title: m.title,
+			year: m.release_date ? m.release_date.split('-')[0] : 'N/A',
+			overview: m.overview || '',
+			rating: typeof m.vote_average === 'number' ? Number(m.vote_average.toFixed(1)) : null,
+			posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
+			backdropUrl: m.backdrop_path ? `https://image.tmdb.org/t/p/original${m.backdrop_path}` : ''
+		}));
+
+		res.json(results);
+	} catch (err) {
+		console.error('Now Playing error:', err.message);
+		res.status(500).json({ error: 'Failed to fetch now playing' });
+	}
+}
+
 module.exports = {
     getAllPublic,
     getOnePublic,
@@ -111,5 +145,6 @@ module.exports = {
     updateMovie,
     deleteMovie,
     searchTMDB,
-    getTMDBDetails
+    getTMDBDetails,
+    nowPlayingTMDB
 };

@@ -14,7 +14,7 @@
 </head>
 
 <body class="min-h-screen font-sans">
-	<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/60 border-b border-white/10">
+	<nav class="fixed top-0 inset-x-0 z-50 backdrop-blur bg-black/50 border-b border-white/10">
 		<div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-6">
 			<a href="index.html" class="font-serif text-xl tracking-wide">
 				<span class="text-[var(--accent)]">Cine</span>phile
@@ -32,7 +32,14 @@
 				></div>
 			</div>
 
-			<div id="auth-section" class="text-xs text-white/80 flex items-center gap-3"></div>
+			<div class="flex items-center gap-2">
+				<a href="#now-playing" class="glass-chip px-3 py-1.5 rounded-full text-sm text-white/90">New</a>
+				<a href="profile.html" class="glass-chip px-3 py-1.5 rounded-full text-sm text-white/90">Profile</a>
+
+				<div id="auth-section" class="flex items-center gap-2"></div>
+
+				<div id="avatar-slot" class="hidden md:block"></div>
+			</div>
 		</div>
 	</nav>
 
@@ -43,75 +50,123 @@
 					Explore films. Save your top 5.
 				</h1>
 				<p class="mt-4 text-white/60 max-w-2xl">
-					TMDB search for discovery + curated collection in your database.
+					TMDB discovery + your curated collection + soundtrack previews.
 				</p>
 
 				<div class="mt-8 flex flex-wrap gap-3">
-					<a
-						href="profile.html"
-						class="px-4 py-2 rounded-full bg-[var(--accent)] text-black text-sm font-medium hover:brightness-95"
-					>
-						Profile
-					</a>
-
 					<button
 						id="btn-refresh"
-						class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-white/80 hover:bg-white/10"
+						class="glass-chip px-4 py-2 rounded-full text-sm text-white/90"
 					>
 						Refresh collection
 					</button>
+
+					<a
+						href="#now-playing"
+						class="px-4 py-2 rounded-full bg-[var(--accent)] text-black text-sm font-medium hover:brightness-95"
+					>
+						See new releases
+					</a>
 				</div>
 			</div>
 		</div>
 	</header>
 
-	<main class="max-w-7xl mx-auto px-6 pb-24 grid grid-cols-1 lg:grid-cols-12 gap-10">
-		<section class="lg:col-span-9">
-			<div class="flex items-end justify-between mb-6">
-				<h2 class="font-serif text-2xl">Curated collection</h2>
-				<span class="text-xs text-white/50">Local DB</span>
+	<main class="max-w-7xl mx-auto px-6 pb-24 space-y-16">
+		<section id="now-playing">
+			<div class="flex items-end justify-between gap-4 mb-6">
+				<div>
+					<h2 class="font-serif text-2xl">Now playing</h2>
+					<p class="text-sm text-white/60 mt-1">New in theaters (TMDB).</p>
+				</div>
+
+				<div class="flex items-center gap-2">
+					<button id="np-prev" class="glass-chip px-3 py-1.5 rounded-full text-sm">←</button>
+					<button id="np-next" class="glass-chip px-3 py-1.5 rounded-full text-sm">→</button>
+				</div>
 			</div>
 
-			<div id="db-movies" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+			<div
+				id="np-track"
+				class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-2"
+				style="scrollbar-width: none;"
+			></div>
 		</section>
 
-		<aside class="lg:col-span-3">
-			<div class="sticky top-28 rounded-3xl border border-white/10 bg-white/5 p-6">
-				<div class="flex items-center justify-between">
-					<h3 class="font-serif text-xl">Your Top 5</h3>
-					<span class="text-[10px] text-white/50 uppercase tracking-widest">Favorites</span>
+		<section class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+			<div class="lg:col-span-9">
+				<div class="flex items-end justify-between mb-6">
+					<h2 class="font-serif text-2xl">Curated collection</h2>
+					<span class="text-xs text-white/50">Local DB</span>
 				</div>
-				<div id="fav-box" class="mt-4 text-sm text-white/60">Login to see your favorites.</div>
+
+				<div id="db-movies" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-5"></div>
 			</div>
-		</aside>
+
+			<aside class="lg:col-span-3">
+				<div class="sticky top-28 rounded-3xl border border-white/10 bg-white/5 p-6">
+					<div class="flex items-center justify-between">
+						<h3 class="font-serif text-xl">Your Top 5</h3>
+						<span class="text-[10px] text-white/50 uppercase tracking-widest">Favorites</span>
+					</div>
+					<div id="fav-box" class="mt-4 text-sm text-white/60">Login to see your favorites.</div>
+				</div>
+			</aside>
+		</section>
 	</main>
 
 	<script>
-		const authDiv = document.getElementById('auth-section');
 		const token = localStorage.getItem('token');
 		const username = localStorage.getItem('username');
 
-		function setAuthUI() {
-			if (token && username) {
-				authDiv.innerHTML = `
-					<span class="hidden md:inline text-white/60">Hi, ${username}</span>
-					<a href="profile.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Profile</a>
-					<button onclick="logout()" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Logout</button>
-				`;
-			} else {
-				authDiv.innerHTML = `
-					<a href="login.html" class="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10">Login</a>
-					<a href="signup.html" class="px-3 py-1.5 rounded-full bg-[var(--accent)] text-black hover:brightness-95">Sign up</a>
-				`;
-			}
-		}
+		const authDiv = document.getElementById('auth-section');
+		const avatarSlot = document.getElementById('avatar-slot');
 
 		function logout() {
 			localStorage.clear();
 			location.reload();
 		}
 
+		function setAuthUI() {
+			if (token && username) {
+				authDiv.innerHTML = `
+					<span class="hidden md:inline text-xs text-white/60">${username}</span>
+					<button onclick="logout()" class="glass-chip px-3 py-1.5 rounded-full text-sm">Logout</button>
+				`;
+			} else {
+				authDiv.innerHTML = `
+					<a href="login.html" class="glass-chip px-3 py-1.5 rounded-full text-sm">Login</a>
+					<a href="signup.html" class="px-3 py-1.5 rounded-full bg-[var(--accent)] text-black text-sm font-medium hover:brightness-95">Sign up</a>
+				`;
+			}
+		}
+
 		setAuthUI();
+
+		// Avatar in navbar
+		async function loadAvatar() {
+			if (!token) return;
+
+			try {
+				const res = await axios.get('/api/users/profile', {
+					headers: { Authorization: `Bearer ${token}` }
+				});
+
+				const url = res.data.avatarUrl || '';
+				if (!url) return;
+
+				avatarSlot.innerHTML = `
+					<img
+						src="${url}"
+						alt="avatar"
+						class="w-9 h-9 rounded-full object-cover border border-white/10"
+						referrerpolicy="no-referrer"
+					/>
+				`;
+			} catch (e) {
+				console.error(e);
+			}
+		}
 
 		// TMDB search
 		const searchInput = document.getElementById('search-input');
@@ -131,7 +186,6 @@
 
 			try {
 				const res = await axios.get(`/api/movies/search?q=${encodeURIComponent(query)}`);
-
 				if (!res.data || res.data.length === 0) {
 					resultsBox.classList.add('hidden');
 					return;
@@ -188,7 +242,7 @@
 			}
 		}
 
-		// Favorites sidebar (works for tmdb + local)
+		// Favorites sidebar
 		async function loadFavorites() {
 			const favBox = document.getElementById('fav-box');
 			if (!token) return;
@@ -199,7 +253,6 @@
 				});
 
 				const fav = res.data.favorites || [];
-
 				if (!fav.length) {
 					favBox.innerHTML = `<div class="text-white/60">No favorites yet.</div>`;
 					return;
@@ -231,8 +284,61 @@
 			}
 		}
 
+		// Now Playing carousel
+		const npTrack = document.getElementById('np-track');
+
+		async function loadNowPlaying() {
+			npTrack.innerHTML = `<div class="text-white/50 text-sm">Loading now playing…</div>`;
+
+			try {
+				const res = await axios.get('/api/movies/now-playing', {
+					params: { region: 'KZ', page: 1, language: 'en-US' }
+				});
+
+				const movies = res.data || [];
+				if (!movies.length) {
+					npTrack.innerHTML = `<div class="text-white/50 text-sm">No data.</div>`;
+					return;
+				}
+
+				npTrack.innerHTML = movies.map((m) => `
+					<a href="movie.html?tmdbId=${m.id}"
+						class="snap-start shrink-0 w-[260px] md:w-[320px] rounded-3xl overflow-hidden border border-white/10 bg-white/5 group">
+						<div class="h-[180px] bg-black">
+							<img src="${m.backdropUrl || m.posterUrl || 'https://via.placeholder.com/800x450'}"
+								class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-500">
+						</div>
+						<div class="p-4">
+							<div class="flex items-center justify-between gap-3">
+								<div class="font-serif text-lg leading-snug line-clamp-2">${m.title}</div>
+								<div class="text-xs text-black bg-[var(--accent)] px-2 py-1 rounded-full">
+									${m.rating ?? 'N/A'}
+								</div>
+							</div>
+							<div class="text-xs text-white/50 mt-2">${m.year || 'N/A'}</div>
+							<div class="text-sm text-white/60 mt-3 line-clamp-2">${m.overview || ''}</div>
+						</div>
+					</a>
+				`).join('');
+
+			} catch (e) {
+				console.error(e);
+				npTrack.innerHTML = `<div class="text-white/50 text-sm">Failed to load now playing.</div>`;
+			}
+		}
+
+		document.getElementById('np-prev').addEventListener('click', () => {
+			npTrack.scrollBy({ left: -360, behavior: 'smooth' });
+		});
+
+		document.getElementById('np-next').addEventListener('click', () => {
+			npTrack.scrollBy({ left: 360, behavior: 'smooth' });
+		});
+
 		document.getElementById('btn-refresh').addEventListener('click', loadLocalMovies);
 
+		loadAvatar();
+		loadNowPlaying();
 		loadLocalMovies();
 		loadFavorites();
 	</script>
